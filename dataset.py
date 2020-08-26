@@ -33,6 +33,7 @@ class MultiSessionsGraph(InMemoryDataset):
         # data = pickle.load(open(self.raw_dir + '/' + self.raw_file_names[0], 'rb'))
         data = pickle.load(open(self.root + '/' + self.raw_file_names[0], 'rb'))
         data_list = []
+        # todo 找最長的 sequence讓其他 padding
         
         for sequence, y in zip(data[0], data[1]):
             # sequence = [1, 3, 2, 2, 1, 3, 4]
@@ -43,7 +44,7 @@ class MultiSessionsGraph(InMemoryDataset):
             for node in sequence:
                 if node not in nodes:
                     nodes[node] = i
-                    x.append([node])
+                    x.append([node])  # 同一sequence下的unique node
                     i += 1
                 senders.append(nodes[node])
             receivers = senders[:]
@@ -73,7 +74,7 @@ class MultiSessionsGraph(InMemoryDataset):
 
             count = collections.Counter(receivers)
             in_degree_inv = torch.tensor([1 / count[i] for i in receivers], dtype=torch.float)
-            
+            # 計算node間的pattern次數, edge的初始weight
             edge_attr = torch.tensor([pair[str(senders[i])+'-'+str(receivers[i])] for i in range(len(senders))],
                                      dtype=torch.float)
 
@@ -82,6 +83,7 @@ class MultiSessionsGraph(InMemoryDataset):
             y = torch.tensor([y], dtype=torch.long)
             sequence = torch.tensor(sequence, dtype=torch.long)
             sequence_len = torch.tensor([len(sequence)], dtype=torch.long)
+            # 相當於networkx的graph
             session_graph = Data(x=x, y=y,
                                  edge_index=edge_index, edge_attr=edge_attr,
                                  sequence=sequence, sequence_len=sequence_len,

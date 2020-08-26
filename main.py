@@ -30,7 +30,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', default='sample', help='dataset name: diginetica/yoochoose1_4/yoochoose1_64/sample')
+parser.add_argument('--dataset', default='diginetica', help='dataset name: diginetica/yoochoose1_4/yoochoose1_64/sample')
 parser.add_argument('--batch_size', type=int, default=100, help='input batch size')
 parser.add_argument('--hidden_size', type=int, default=100, help='hidden state size')
 parser.add_argument('--epoch', type=int, default=10, help='the number of epochs to train for')
@@ -48,6 +48,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     cur_dir = os.getcwd()
+    # custom dataset
     train_dataset = MultiSessionsGraph(cur_dir + '/datasets/' + opt.dataset, phrase='train')
     train_loader = DataLoader(train_dataset, batch_size=opt.batch_size, shuffle=True)
     test_dataset = MultiSessionsGraph(cur_dir + '/datasets/' + opt.dataset, phrase='test')

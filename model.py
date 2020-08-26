@@ -68,12 +68,17 @@ class GNNModel(nn.Module):
 
     def forward(self, data):
         x, edge_index, batch, edge_attr = data.x - 1, data.edge_index, data.batch, data.edge_attr
+        # print(torch.sum(data.sequence_len), data.sequence.shape[0])  # sequence是batch下全部concat
+        # print(x.squeeze(dim=-1).unique().shape, x.shape)  # x是batch下總共有多少edge
 
         embedding = self.embedding(x).squeeze()
-        hidden = self.gated(embedding, edge_index)#, edge_attr.float())
-        #
-        # hidden = F.relu(self.gat1(embedding, edge_index))
-        # hidden = self.gat2(hidden, edge_index)
+
+        # GGNN
+        # hidden = self.gated(embedding, edge_index)
+
+        # GAT
+        hidden = F.relu(self.gat1(embedding, edge_index))
+        hidden = self.gat2(hidden, edge_index)
         
         # hidden1 = F.relu(self.sage1(embedding, edge_index))
         # hidden2 = F.relu(self.sage2(hidden1, edge_index))
