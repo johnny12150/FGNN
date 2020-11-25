@@ -11,7 +11,6 @@ import torch
 import time
 from tqdm import tqdm
 from dataset import MultiSessionsGraph
-
 from torch_geometric.data import DataLoader
 from model import GNNModel
 # from sort_pooling_model import SortPoolModel
@@ -30,7 +29,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', default='diginetica', help='dataset name: diginetica/yoochoose1_4/yoochoose1_64/sample')
+parser.add_argument('--dataset', default='yoochoose1_64', help='dataset name: diginetica/yoochoose1_4/yoochoose1_64/sample')
 parser.add_argument('--batch_size', type=int, default=100, help='input batch size')
 parser.add_argument('--hidden_size', type=int, default=100, help='hidden state size')
 parser.add_argument('--epoch', type=int, default=10, help='the number of epochs to train for')
@@ -66,6 +65,8 @@ def main():
         n_node = 43097
     elif opt.dataset == 'yoochoose1_64' or opt.dataset == 'yoochoose1_4':
         n_node = 37483
+    elif opt.dataset == 'diginetica_users':
+        n_node = 15189+1
     else:
         n_node = 309
 
